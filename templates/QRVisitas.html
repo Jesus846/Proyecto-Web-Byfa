@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de QR para Visitas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Generador de QR para Visitas</h1>
+        
+        <!-- Mostrar mensajes -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        <div>
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        
+        <!-- Formulario -->
+        <form action="{{ url_for('generar_qr2') }}" method="POST" class="bg-white p-4 rounded shadow-sm">
+            <div class="mb-3">
+                <label for="tarjeta" class="form-label">Número de Tarjeta</label>
+                <input type="text" id="tarjeta" name="tarjeta" class="form-control" placeholder="Ingrese el número de tarjeta">
+            </div>
+            <div class="mb-3">
+                <label for="usuario" class="form-label">Usuario General</label>
+                <input type="text" id="usuario" name="usuario" class="form-control" placeholder="Ingrese el nombre del usuario general">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Generar QR</button>
+        </form>
+
+        <!-- Mostrar QR generado -->
+        {% if request.args.qr_file %}
+        <div class="mt-4 text-center">
+            <h5>Código QR Generado:</h5>
+            <img src="{{ url_for('static', filename='QR_Visitas/' + request.args.qr_file) }}" alt="QR Code" class="img-fluid mt-2" style="max-width: 200px;">
+            <p class="mt-3">
+                <a href="{{ url_for('download_qr', filename=request.args.qr_file) }}" class="btn btn-success">
+                    Descargar QR
+                </a>
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
